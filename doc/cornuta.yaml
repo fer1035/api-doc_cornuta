@@ -1,0 +1,159 @@
+openapi: 3.0.0
+info:
+  title: Cornuta
+  description: >-
+    Proof-of-Concept text encryption using rotating substitution cipher.
+    Try with API key: ELzrkdAk2b9VWQmBD9Ocv33KPcGGnDnT965WZSn3
+  version: 2.0.1
+servers:
+  - url: https://api.warpedlenses.com/cornuta
+    # description: None.
+paths:
+  /WLPrint:
+    post:
+      tags:
+        - encrypt
+      summary: Converts cleartext into ciphertext based on provided key.
+      description: Key is arbitrary, but must be identical between encryption and decryption.
+      # parameters:
+      #   - required: true
+      #     in: query
+      #     name: key
+      #     schema:
+      #       type: string
+      #     example: mykunci
+      #     description: Encryption key
+      #   - required: true
+      #     in: query
+      #     name: task
+      #     schema:
+      #       type: string
+      #     example: '1'
+      #     description: 1 = encrypt, 2 = decrypt
+      #   - required: true
+      #     in: query
+      #     name: msg
+      #     schema:
+      #       type: string
+      #     example: Ahmad Ferdaus Abd Razak
+      #     description: Cleartext to be encrypted
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StandardRequest'
+            examples:
+              MyName:
+                $ref: '#/components/examples/MyName'
+            # example:
+            #   key: mykunci
+            #   task: '1'
+            #   msg: Ahmad Ferdaus Abd Razak
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/StandardResponse'
+              example:
+                status: Gak45 305to26 Aii p6q0y
+                request_id: e4deb6d1-5743-4ead-8b7c-79477d362435
+                status_code: 200
+            # text/plain:
+            #   schema: 
+            #     type: string
+            #     example: Gak45 305to26 Aii p6q0y
+        '400':
+          description: Invalid request body
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/StandardError'
+              example:
+                message: Invalid request body
+        '403':
+          description: Invalid API key
+          content:
+            application/json:
+              schema: 
+                # oneOf:
+                #   - $ref: '#/components/schemas/StandardResponse'
+                #   - $ref: '#/components/schemas/StandardResponse'
+                #   - $ref: '#/components/schemas/APIErrorResponse'
+                $ref: '#/components/schemas/StandardError'
+              example:
+                message: Forbidden
+              # examples:
+              #   StandardResponseBearer:
+              #     summary: Malformed bearer token
+              #     value:
+              #       status: Malformed bearer token.
+              #       request_id: askjhdas23424_asdkajhdaoiasDASDA
+              #       status_code: 403
+              #   StandardResponseToken:
+              #     summary: Failed to verify token
+              #     value:
+              #       status: Failed to verify token.
+              #       request_id: askjhdas23424_asdkajhdaoiasDASDA
+              #       status_code: 403
+              #   APIErrorResponse:
+              #     summary: Invalid API key
+              #     value:
+              #       message: Forbidden
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/StandardError'
+              example:
+                message: Internal server error
+security:
+        - ApiKeyAuth: []
+          # BearerAuth: []
+components:
+  schemas:
+    StandardRequest:
+      type: object
+      properties:
+        key:
+          type: string
+        task:
+          type: string
+        msg:
+          type: string
+      required:  
+        - key
+        - task
+        - msg
+    StandardError:
+      type: object
+      properties:
+        message:
+          type: string
+    StandardResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        request_id:
+          type: string
+        status_code:
+          type: integer
+  examples:
+    MyName:
+      summary: Encrypting my name
+      value:
+        key: mykunci
+        task: '1'
+        msg: Ahmad Ferdaus Abd Razak
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+    # BearerAuth:
+    #   type: http
+    #   scheme: bearer
